@@ -1,0 +1,22 @@
+create virtual network : vNet
+create 2 vms with same virtual network
+
+
+on terminal:
+
+ssh Vaibhavi_2507@public_ip_1
+ping private_ip_2
+nano test.txt
+
+hello from vm1
+
+scp test.txt Vaibhavi_2507@private_ip_2:/home/Vaibhavi_2507/
+
+
+on another terminal:
+
+ssh Vaibhavi_2507@public_ip_2
+ls
+cat test.txt
+chmod 600 test.txt
+ls -1
