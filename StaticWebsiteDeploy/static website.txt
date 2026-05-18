@@ -1,0 +1,44 @@
+static website
+
+1.create vm
+user: Vaibhavi_2507
+pass: Raghav@30082010
+
+terminal: vm terminal
+
+sudo apt update
+sudo apt install nginx -y
+
+sudo systemctl status nginx       or start
+sudo systemctl start nginx        or enable
+
+on browser:
+
+http://<public-ip>
+
+terminal:
+
+sudo rm index.nginx-debian.html
+sudo nano /var/www/html/index.html
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Azure Website</title>
+</head>
+<body>
+    <h1>Welcome to My Website 🚀</h1>
+    <p>Hosted on Azure VM</p>
+</body>
+</html>
+
+
+sudo systemctl stop nginx
+
+
+to update remotely:
+cd /var/www/html
+sudo nano index.html
+
+
+
