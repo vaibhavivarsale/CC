@@ -1,0 +1,116 @@
+#include<iostream>
+#include<vector>
+using namespace std;
+
+vector<vector<string>> solutions;
+int n;
+
+// Function to solve N Queens
+void NQueens(int row,
+             vector<string>& board,
+             vector<bool>& columns,
+             vector<bool>& ndiag,
+             vector<bool>& rdiag) {
+
+    // Base case
+    if(row == n) {
+        solutions.push_back(board);
+        return;
+    }
+
+    for(int col = 0; col < n; col++) {
+
+        // Branch and Bound check
+        if(columns[col] ||
+           ndiag[row + col] ||
+           rdiag[row - col + n - 1])
+            continue;
+
+        // Place queen
+        board[row][col] = 'Q';
+        columns[col] = true;
+        ndiag[row + col] = true;
+        rdiag[row - col + n - 1] = true;
+
+        // Recursive call
+        NQueens(row + 1, board, columns, ndiag, rdiag);
+
+        // Backtracking
+        board[row][col] = '.';
+        columns[col] = false;
+        ndiag[row + col] = false;
+        rdiag[row - col + n - 1] = false;
+    }
+}
+
+int main() {
+
+    int choice;
+
+    while(true) {
+
+        cout << "\n===== N Queens Menu =====\n";
+        cout << "1. Enter value of N\n";
+        cout << "2. Show all solutions\n";
+        cout << "3. Exit\n";
+        cout << "Enter choice: ";
+        cin >> choice;
+
+        if(choice == 1) {
+
+            cout << "Enter N: ";
+            cin >> n;
+        }
+
+        else if(choice == 2) {
+
+            if(n <= 0) {
+                cout << "Please enter N first\n";
+                continue;
+            }
+
+            // Clear previous solutions
+            solutions.clear();
+
+            // Create empty board
+            vector<string> board(n, string(n, '.'));
+
+            // Branch and Bound arrays
+            vector<bool> columns(n, false);
+            vector<bool> ndiag(2*n - 1, false);
+            vector<bool> rdiag(2*n - 1, false);
+
+            // Solve
+            NQueens(0, board, columns, ndiag, rdiag);
+
+            if(solutions.empty()) {
+                cout << "No solution exists\n";
+            }
+            else {
+
+                cout << "\nTotal Solutions: "
+                     << solutions.size() << endl;
+
+                for(int i = 0; i < solutions.size(); i++) {
+
+                    cout << "\nSolution "
+                         << i + 1 << ":\n";
+
+                    for(string row : solutions[i]) {
+                        cout << row << endl;
+                    }
+                }
+            }
+        }
+
+        else if(choice == 3) {
+            break;
+        }
+
+        else {
+            cout << "Invalid choice\n";
+        }
+    }
+
+    return 0;
+}

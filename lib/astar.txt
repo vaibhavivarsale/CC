@@ -1,0 +1,180 @@
+// Implement A* Algorithm for 8 Puzzle using Manhattan Distance
+
+#include<iostream>
+#include<vector>
+#include<unordered_map>
+#include<set>
+#include<queue>
+#include<cmath>
+
+using namespace std;
+
+unordered_map<int, pair<int,int>> goalPos;
+
+struct Node {
+    vector<vector<int>> state;
+    int g;
+    int h;
+    int f;
+};
+
+struct Compare {
+    bool operator()(Node a, Node b) {
+        return a.f > b.f;
+    }
+};
+
+// Manhattan Distance Heuristic
+int manhattanDistance(vector<vector<int>> state,
+                      vector<vector<int>> goal) {
+
+    int distance = 0;
+
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+
+            int value = state[i][j];
+
+            // Ignore blank tile
+            if(value != 0) {
+                int x = goalPos[value].first;
+                int y = goalPos[value].second;
+
+                distance += abs(i - x) + abs(j - y);
+            }
+        }
+    }
+
+    return distance;
+}
+
+void printState(vector<vector<int>> state) {
+
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+
+            if(state[i][j] == 0)
+                cout << "_ ";
+            else
+                cout << state[i][j] << " ";
+        }
+        cout << endl;
+    }
+}
+
+void solve(vector<vector<int>> start,
+           vector<vector<int>> goal) {
+
+    priority_queue<Node, vector<Node>, Compare> pq;
+    set<vector<vector<int>>> visited;
+
+    Node startNode;
+    startNode.state = start;
+    startNode.g = 0;
+    startNode.h = manhattanDistance(start, goal);
+    startNode.f = startNode.g + startNode.h;
+
+    pq.push(startNode);
+
+    int dx[] = {-1, 1, 0, 0};
+    int dy[] = {0, 0, 1, -1};
+
+    while(!pq.empty()) {
+
+        Node currentNode = pq.top();
+        pq.pop();
+
+        if(visited.find(currentNode.state) != visited.end())
+            continue;
+
+        visited.insert(currentNode.state);
+
+        // Print current state
+        printState(currentNode.state);
+
+        cout << "g(n) = " << currentNode.g
+             << "  h(n) = " << currentNode.h
+             << "  f(n) = " << currentNode.f
+             << endl << endl;
+
+        // Goal check
+        if(currentNode.state == goal) {
+            cout << "GOAL REACHED" << endl;
+            return;
+        }
+
+        int x, y;
+
+        // Find blank tile
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                if(currentNode.state[i][j] == 0) {
+                    x = i;
+                    y = j;
+                }
+            }
+        }
+
+        // Generate neighbours
+        for(int i = 0; i < 4; i++) {
+
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+
+            if(nx >= 0 && nx < 3 &&
+               ny >= 0 && ny < 3) {
+
+                vector<vector<int>> newState =
+                    currentNode.state;
+
+                swap(newState[x][y],
+                     newState[nx][ny]);
+
+                if(visited.find(newState)
+                   == visited.end()) {
+
+                    Node newNode;
+                    newNode.state = newState;
+                    newNode.g = currentNode.g + 1;
+                    newNode.h = manhattanDistance(newState, goal);
+                    newNode.f = newNode.g + newNode.h;
+
+                    pq.push(newNode);
+                }
+            }
+        }
+    }
+
+    cout << "No solution found" << endl;
+}
+
+int main() {
+
+    vector<vector<int>> start(3, vector<int>(3));
+    vector<vector<int>> goal(3, vector<int>(3));
+
+    cout << "Enter Start State (0 for blank):\n";
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            cin >> start[i][j];
+        }
+    }
+
+    cout << "Enter Goal State (0 for blank):\n";
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            cin >> goal[i][j];
+        }
+    }
+
+    // Store GOAL positions
+    for(int i = 0; i < 3; i++) {
+        for(int j = 0; j < 3; j++) {
+            goalPos[goal[i][j]] = {i, j};
+        }
+    }
+
+    solve(start, goal);
+
+    return 0;
+}

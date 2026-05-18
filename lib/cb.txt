@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>ABC Bank Chatbot</title>
+
+    <style>
+
+        /* Page Styling */
+        body{
+            font-family: Arial;
+            background-color: #f2f2f2;
+        }
+
+        /* Main Chatbot Box */
+        .chatbox{
+            width: 450px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px gray;
+        }
+
+        /* Heading */
+        h2{
+            text-align: center;
+        }
+
+        /* Chat Area */
+        #chat{
+            height: 350px;
+            border: 1px solid gray;
+            overflow-y: auto;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* User Message */
+        .user{
+            color: blue;
+            margin: 8px;
+        }
+
+        /* Bot Message */
+        .bot{
+            color: green;
+            margin: 8px;
+        }
+
+        /* Input Box */
+        input{
+            width: 75%;
+            padding: 10px;
+        }
+
+        /* Send Button */
+        button{
+            padding: 10px;
+        }
+
+    </style>
+    
+</head>
+
+<body>
+
+    <!-- Chatbot Container -->
+    <div class="chatbox">
+
+        <!-- Chatbot Title -->
+        <h2>ABC Bank Chatbot</h2>
+
+        <!-- Chat Messages Will Appear Here -->
+        <div id="chat"></div>
+
+        <!-- User Input -->
+        <input type="text" id="userInput" placeholder="Ask your question">
+
+        <!-- Button -->
+        <button onclick="sendMessage()">Send</button>
+
+    </div>
+
+<script>
+
+    // Variables to remember chatbot state
+    let waitingForAccount = false;
+    let waitingForWithdraw = false;
+
+    // Main chatbot function
+    function sendMessage()
+    {
+        // Get user input and convert to lowercase
+        let input = document.getElementById("userInput").value.toLowerCase();
+
+        // Access chat area
+        let chat = document.getElementById("chat");
+
+        // Display user message
+        chat.innerHTML +=
+        "<div class='user'><b>You:</b> " + input + "</div>";
+
+        // Variable to store bot reply
+        let response = "";
+
+
+
+        // ===============================
+        // MULTI-STEP BALANCE FEATURE
+        // ===============================
+
+        // If chatbot is waiting for account number
+        if(waitingForAccount)
+        {
+            response = "Your account balance is Rs.50,000.";
+
+            // Reset state
+            waitingForAccount = false;
+        }
+
+
+
+        // ===============================
+        // MULTI-STEP WITHDRAW FEATURE
+        // ===============================
+
+        // If chatbot is waiting for withdraw amount
+        else if(waitingForWithdraw)
+        {
+            response = "Withdrawal request successful.";
+
+            // Reset state
+            waitingForWithdraw = false;
+        }
+
+
+
+        // ===============================
+        // NORMAL CHATBOT QUERIES
+        // ===============================
+
+        // Greeting
+        else if(input.includes("hello") || input.includes("hi"))
+        {
+            response = "Hello! Welcome to ABC Bank.";
+        }
+
+        // Account information
+        else if(input.includes("account"))
+        {
+            response = "We provide savings and current accounts.";
+        }
+
+        // Savings account
+        else if(input.includes("savings"))
+        {
+            response = "Savings account minimum balance is Rs.1000.";
+        }
+
+        // Current account
+        else if(input.includes("current"))
+        {
+            response = "Current accounts are mainly for businesses.";
+        }
+
+        // Loan information
+        else if(input.includes("loan"))
+        {
+            response = "We provide home, education and car loans.";
+        }
+
+        // Credit card
+        else if(input.includes("credit card"))
+        {
+            response = "Credit card facility is available.";
+        }
+
+        // Debit card
+        else if(input.includes("debit card"))
+        {
+            response = "Debit card is issued free with every account.";
+        }
+
+
+
+        // ===============================
+        // BALANCE CHECK QUERY
+        // ===============================
+
+        else if(input.includes("check balance") || input.includes("balance"))
+        {
+            response = "Please enter your account number.";
+
+            // Chatbot now waits for account number
+            waitingForAccount = true;
+        }
+
+
+
+        // ===============================
+        // WITHDRAW QUERY
+        // ===============================
+
+        else if(input.includes("withdraw"))
+        {
+            response = "Enter amount to withdraw.";
+
+            // Chatbot now waits for amount
+            waitingForWithdraw = true;
+        }
+
+
+
+        // IFSC code
+        else if(input.includes("ifsc"))
+        {
+            response = "ABC0001234 is the IFSC code of main branch.";
+        }
+
+        // Branch information
+        else if(input.includes("branch"))
+        {
+            response = "Our main branch is located in Pune.";
+        }
+
+        // Bank timings
+        else if(input.includes("timing"))
+        {
+            response = "Bank timings are 10 AM to 4 PM.";
+        }
+
+        // Net banking
+        else if(input.includes("net banking"))
+        {
+            response = "Net banking is available 24x7.";
+        }
+
+        // Mobile banking
+        else if(input.includes("mobile banking"))
+        {
+            response = "Download ABC Bank app from Play Store.";
+        }
+
+        // Customer support
+        else if(input.includes("customer care"))
+        {
+            response = "Call 1800-123-456 for customer support.";
+        }
+
+        // Exit message
+        else if(input.includes("bye"))
+        {
+            response = "Thank you for visiting ABC Bank.";
+        }
+
+        // Default response
+        else
+        {
+            response = "Sorry! I did not understand your query.";
+        }
+
+        // Display bot response
+        chat.innerHTML +=
+        "<div class='bot'><b>Bot:</b> " + response + "</div>";
+
+        // Clear input box
+        document.getElementById("userInput").value = "";
+    }
+
+</script>
+
+</body>
+</html>
